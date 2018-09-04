@@ -27,6 +27,11 @@ class Padam(Optimizer):
             - [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980)
         """
         super(Padam, self).__init__(**kwargs)
+
+        if partial < 0.0 or partial > 0.5:
+            raise ValueError("`partial` must be a positive float between 0 and 0.5, "
+                             "otherwise the optimizer may not converge.")
+
         with K.name_scope(self.__class__.__name__):
             self.iterations = K.variable(0, dtype='int64', name='iterations')
             self.lr = K.variable(lr, name='lr')
