@@ -49,11 +49,11 @@ subtract_pixel_mean = True
 # ResNet164 |27(18)| -----     | 94.07     | -----     | 94.54     | ---(---)
 # ResNet1001| (111)| -----     | 92.39     | -----     | 95.08+-.14| ---(---)
 # ---------------------------------------------------------------------------
-n = 3
+n = 2
 
 # Model version
 # Orig paper: version = 1 (ResNet v1), Improved ResNet: version = 2 (ResNet v2)
-version = 1
+version = 2
 
 # Computed depth from supplied model parameter n
 if version == 1:
@@ -100,11 +100,12 @@ def lr_schedule(epoch):
         lr (float32): learning rate
     """
     lr = 0.1
-    if epoch > 80:
+    epoch += 1
+    if epoch >= 90:
         lr *= 1e-3
-    elif epoch > 60:
+    elif epoch >= 60:
         lr *= 1e-2
-    elif epoch > 30:
+    elif epoch >= 30:
         lr *= 1e-1
     print('Learning rate: ', lr)
     return lr
@@ -323,7 +324,7 @@ else:
     model = resnet_v1(input_shape=input_shape, depth=depth)
 
 model.compile(loss='categorical_crossentropy',
-              optimizer=Padam(lr=lr_schedule(0)),
+              optimizer=Padam(lr=lr_schedule(0), partial=0.25),
               metrics=['accuracy'])
 model.summary()
 print(model_type)
